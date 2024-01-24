@@ -11,20 +11,18 @@ import platform
 import NilsimsaHasher
 
 current_host = str(socket.gethostname())
-scraping_dir = '/usr/bin/'
+scraping_dir = '/usr/bin'
 
 
 def get_files_from_directory(scraping_dir):
     found_files = []
     for filename in os.listdir(scraping_dir):
-        if os.path.isfile(filename) or platform.system() == 'Darwin':
+        if os.path.isfile(os.path.join(scraping_dir, filename)) or platform.system() == 'Darwin':
             found_files.append(os.path.join(scraping_dir, filename))
     return found_files
 
 
-
 def main():
-
     hasher_list = ['NilsimsaHasher', 'TLSHHasher']
 
     data_path = './data/' + current_host
@@ -34,22 +32,21 @@ def main():
     else:
         print('Directory already exsists!')
 
+    print(os.getcwd())
+    print(scraping_dir)
+
     if not os.path.exists(scraping_dir):
         print(f"The supplied Directory ({scraping_dir}) does not exist on this machine!")
         exit(1)
 
     file_list = get_files_from_directory(scraping_dir)
     file_list = file_list[:10]
-    #print(file_list)
-
+    print(file_list)
 
     for file in file_list:
-        # print(file)
         # Creating the empty text-file to save the hashes to:
         file_name = file.split('/')[-1:][0]
-        # print(type(file_name))
         save_file_path = os.path.join(data_path, file_name)
-        # print(f'aaaaa: {save_file_path}')
         if not os.path.isfile(save_file_path):
             with open(save_file_path, 'w') as fp:
                 pass
@@ -65,11 +62,8 @@ def main():
                 fp.write(f'{str(current_hasher)},{bin_hash}\n')
 
         except IOError:
-           print("An IO-Error occured, have fun finding the location where it is thrown xd")
-
-
+            print("An IO-Error occured, have fun finding the location where it is thrown xd")
 
 
 if __name__ == '__main__':
     main()
-
